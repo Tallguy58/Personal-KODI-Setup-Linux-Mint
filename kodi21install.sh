@@ -379,7 +379,8 @@ echo -e '\033[1;33mInstalling \033[1;34mSkype Video Commmunications\033[0m'
 wget -q -O /tmp/skypeforlinux-64.deb https://repo.skype.com/latest/skypeforlinux-64.deb
 dpkg -i /tmp/skypeforlinux-64.deb >/dev/null
 rm -f /tmp/skypeforlinux-64.deb
-cp -f /etc/apt/trusted.gpg /etc/apt/trusted.gpg.d
+rm -f /etc/apt/sources.list.d/skype-stable.list
+rm -f /etc/apt/trusted.gpg
 cp -f /usr/share/applications/skypeforlinux.desktop /home/$currentuser/Desktop
 }
 
