@@ -320,6 +320,13 @@ function bootdrivelabel() {
    e2label $dev 'Linux Mint'
 }
 
+function grub-customizer() {
+   echo -e '\033[1;33mInstalling \033[1;34mGrub Customizer\033[0m'
+   add-apt-repository -y ppa:danielrichter2007/grub-customizer
+   apt-get -y -qq update >/dev/null
+   apt-get -y -qq install grub-customizer >/dev/null
+}
+
 function desktop-settings() {
 echo -e '\033[1;33mUpdating   \033[1;34mDesktop Themes And Settings...\033[0m'
 # Desktop Icon Settings
@@ -418,6 +425,7 @@ get-zoom
 fix-desktop-error
 get-skype
 bootdrivelabel
+grub-customizer
 desktop-settings
 
 echo "MEDIAPC" > /etc/hostname
