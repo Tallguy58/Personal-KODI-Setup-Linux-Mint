@@ -266,6 +266,13 @@ fi
 apt-get -y -qq install snapd >/dev/null
 }
 
+function grub-customizer() {
+echo -e '\033[1;33mInstalling \033[1;34mGrub CustomizerD\033[0m'
+add-apt-repository -y ppa:danielrichter2007/grub-customizer
+apt-get -y -qq update >/dev/null
+apt-get -y install grub-customizer >/dev/null
+}
+
 function get-zoom() {
 echo -e '\033[1;33mInstalling \033[1;34mZoom Video Communications\033[0m'
 apt-get -y -qq install libglib2.0-0 >/dev/null
@@ -413,6 +420,7 @@ get-snapd
 get-zoom
 fix-desktop-error
 get-skype
+grub-customizer
 bootdrivelabel
 desktop-settings
 
