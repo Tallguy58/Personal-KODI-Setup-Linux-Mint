@@ -306,25 +306,14 @@ fi
 
 function get-skype() {
 echo -e '\033[1;33mInstalling \033[1;34mSkype Video Commmunications\033[0m'
-wget -q -O /tmp/skypeforlinux-64.deb https://repo.skype.com/latest/skypeforlinux-64.deb
-dpkg -i /tmp/skypeforlinux-64.deb >/dev/null
-rm -f /tmp/skypeforlinux-64.deb
-rm -f /etc/apt/sources.list.d/skype-stable.list
-rm -f /etc/apt/trusted.gpg
-cp -f /usr/share/applications/skypeforlinux.desktop /home/$currentuser/Desktop
+snap install skype
+cp -f /var/lib/snapd/desktop/applications/skype_skypeforlinux.desktop /home/$currentuser/Desktop
 }
 
 function bootdrivelabel() {
    echo -e '\033[1;31mSetting Boot Hard Disc Drive Label\033[0m'
    dev=$(findmnt -t ext4 -n -o source | head -1)
    e2label $dev 'Linux Mint'
-}
-
-function grub-customizer() {
-   echo -e '\033[1;33mInstalling \033[1;34mGrub Customizer\033[0m'
-   add-apt-repository -y ppa:danielrichter2007/grub-customizer
-   apt-get -y -qq update >/dev/null
-   apt-get -y -qq install grub-customizer >/dev/null
 }
 
 function desktop-settings() {
@@ -340,7 +329,7 @@ run-in-user-session dconf write /org/nemo/desktop/volumes-visible "false"
 run-in-user-session dconf write /org/cinnamon/desktop/background/slideshow/delay 5
 run-in-user-session dconf write /org/cinnamon/desktop/background/slideshow/slideshow-enabled "true"
 run-in-user-session dconf write /org/cinnamon/desktop/background/slideshow/random-order "true"
-run-in-user-session dconf write /org/cinnamon/desktop/background/slideshow/image-source "'xml:///usr/share/cinnamon-background-properties/linuxmint-wilma.xml'"
+run-in-user-session dconf write /org/cinnamon/desktop/background/slideshow/image-source "'xml:///usr/share/cinnamon-background-properties/linuxmint-virginia.xml'"
 #Screen Saver
 run-in-user-session dconf write /org/cinnamon/desktop/session/idle-delay "uint32 0"
 run-in-user-session dconf write /org/cinnamon/desktop/screensaver/lock-enabled "false"
@@ -425,7 +414,6 @@ get-zoom
 fix-desktop-error
 get-skype
 bootdrivelabel
-grub-customizer
 desktop-settings
 
 echo "MEDIAPC" > /etc/hostname
