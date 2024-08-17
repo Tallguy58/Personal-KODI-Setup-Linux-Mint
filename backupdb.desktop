@@ -1,9 +1,6 @@
-#!/usr/bin/env xdg-open
 [Desktop Entry]
-Name=Backup KODI Media Centre Database
-Comment=Installs KODI Media Centre & Other Software
-Exec=gnome-terminal -e "bash -c 'cd \"$(dirname "\"%k\"")\"; sudo bash "./backupdb.sh"'"
+Name=Backup KODI User Profile
+Comment=Backup KODI User Profile
+Exec=gnome-terminal -- sh -c 'cd "'"$(dirname %k)"'"; sudo bash ./backupdb.sh'
 Icon=org.gnome.DiskUtility
-Terminal=false
 Type=Application
-Categories=Application;

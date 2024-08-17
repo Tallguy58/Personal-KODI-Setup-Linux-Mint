@@ -36,7 +36,7 @@ apt-get -y -qq install libnss-winbind >/dev/null
 mkdir -p /etc/samba
 cp -f files/smb.conf /etc/samba
 touch /etc/libuser.conf
-chmod 0777 -R /var/lib/samba/usershares
+chmod 0777 -Rf /var/lib/samba/usershares
 files=$(ls -1 /var/lib/samba/usershares)
 if [ "$files" != """" ]; then
   rm -f /var/lib/samba/usershares/*
@@ -106,7 +106,7 @@ a2enmod php7.4
 update-alternatives --set php /usr/bin/php7.4
 update-alternatives --set phar /usr/bin/phar7.4
 update-alternatives --set phar.phar /usr/bin/phar.phar7.4
-chmod -R -f 0777 /var/www/html
+chmod -Rf 0777 /var/www/html
 rm -r -f /var/www/html/*
 unzip -o -q files/navphp4.45.zip -d/var/www/html
 echo -e 'php_value upload_max_filesize 4.0G'>/var/www/html/.htaccess
@@ -179,7 +179,7 @@ echo -e 'X-GNOME-Autostart-Delay=5'>>/home/$currentuser/.config/autostart/conky.
 wget -q -O /tmp/hdsentinel.gz https://www.hdsentinel.com/hdslin/hdsentinel-019c-x64.gz
 gunzip -d /tmp/hdsentinel.gz
 mv -f /tmp/hdsentinel /bin
-chmod 0777 /bin/hdsentinel
+chmod 0777 -f /bin/hdsentinel
 if ! grep -Fxq $currentuser" ALL=NOPASSWD: /bin/hdsentinel" /etc/sudoers
 then
     echo $currentuser" ALL=NOPASSWD: /bin/hdsentinel">>/etc/sudoers
@@ -224,13 +224,13 @@ echo -e 'StartupWMClass=DUC'>>/home/$currentuser/Desktop/duc.desktop
 echo -e 'Encoding=UTF-8'>>/home/$currentuser/Desktop/duc.desktop
 echo -e 'Categories=Application;'>>/home/$currentuser/Desktop/duc.desktop
 echo -e 'Name[en_AU]=Disk Usage Chart'>>/home/$currentuser/Desktop/duc.desktop
-chmod +x /bin/duc.sh
+chmod +x -f /bin/duc.sh
 }
 
 function get-SimpleHTTPServerWithUpload() {
 echo -e '\033[1;33mInstalling \033[1;34mSimple HTTP Service with Upload\033[0m'
 cp -f files/SimpleHTTPServerWithUpload.py /bin
-chmod +x /bin/SimpleHTTPServerWithUpload.py
+chmod +x -f /bin/SimpleHTTPServerWithUpload.py
 ## Create BASH Script
 echo -e '#!/bin/bash'>/bin/SimpleHTTPServerWithUpload.sh
 echo -e 'clear'>>/bin/SimpleHTTPServerWithUpload.sh
@@ -245,8 +245,8 @@ echo -e 'Restart=Always'>>/lib/systemd/system/SimpleHTTPServerWithUpload.service
 echo -e '[Install]'>>/lib/systemd/system/SimpleHTTPServerWithUpload.service
 echo -e 'WantedBy=multi-user.target'>>/lib/systemd/system/SimpleHTTPServerWithUpload.service
 ## Change Permissions
-chmod +x /bin/SimpleHTTPServerWithUpload.sh
-chmod 0644 /lib/systemd/system/SimpleHTTPServerWithUpload.service
+chmod +x -f /bin/SimpleHTTPServerWithUpload.sh
+chmod 0644 -f /lib/systemd/system/SimpleHTTPServerWithUpload.service
 systemctl -q enable SimpleHTTPServerWithUpload
 }
 
@@ -266,13 +266,6 @@ fi
 apt-get -y -qq install snapd >/dev/null
 }
 
-function grub-customizer() {
-echo -e '\033[1;33mInstalling \033[1;34mGrub CustomizerD\033[0m'
-add-apt-repository -y ppa:danielrichter2007/grub-customizer
-apt-get -y -qq update >/dev/null
-apt-get -y install grub-customizer >/dev/null
-}
-
 function get-zoom() {
 echo -e '\033[1;33mInstalling \033[1;34mZoom Video Communications\033[0m'
 apt-get -y -qq install libglib2.0-0 >/dev/null
@@ -283,8 +276,6 @@ apt-get -y -qq install libxcb-xfixes0 >/dev/null
 apt-get -y -qq install libxcb-randr0 >/dev/null
 apt-get -y -qq install libxcb-image0 >/dev/null
 apt-get -y -qq install libfontconfig1 >/dev/null
-apt-get -y -qq install libgl1-mesa-glx >/dev/null
-apt-get -y -qq install libegl1-mesa >/dev/null
 apt-get -y -qq install libxi6 >/dev/null
 apt-get -y -qq install libsm6 >/dev/null
 apt-get -y -qq install libxrender1 >/dev/null
@@ -303,11 +294,13 @@ cp -f /usr/share/applications/Zoom.desktop /home/$currentuser/Desktop
 }
 
 function fix-desktop-error() {
-if ! grep -Fxq 'MimeType=application/octet-stream;' /usr/share/applications/org.kde.kdeconnect_open.desktop
-then
-   echo -e '\033[1;31mFixing Desktop Database...\033[0m'
-   sed -i '/MimeType=/c\MimeType=application\/octet-stream;' /usr/share/applications/org.kde.kdeconnect_open.desktop
-   update-desktop-database
+if [ -f /usr/share/applications/org.kde.kdeconnect_open.desktop ]; then
+	if ! grep -Fxq 'MimeType=application/octet-stream;' /usr/share/applications/org.kde.kdeconnect_open.desktop
+	then
+		echo -e '\033[1;31mFixing Desktop Database...\033[0m'
+		sed -i '/MimeType=/c\MimeType=application\/octet-stream;' /usr/share/applications/org.kde.kdeconnect_open.desktop
+		update-desktop-database
+	fi
 fi
 }
 
@@ -315,11 +308,14 @@ function get-skype() {
 echo -e '\033[1;33mInstalling \033[1;34mSkype Video Commmunications\033[0m'
 snap install skype
 cp -f /var/lib/snapd/desktop/applications/skype_skypeforlinux.desktop /home/$currentuser/Desktop
+if [ -f /home/$currentuser/snap/skype/current/.config/autostart/skypeforlinux.desktop ]; then
+	rm -f /home/$currentuser/snap/skype/current/.config/autostart/skypeforlinux.desktop
+fi
 }
 
 function bootdrivelabel() {
    echo -e '\033[1;31mSetting Boot Hard Disc Drive Label\033[0m'
-   dev=$(findmnt -t ext4 -n -o source | head -1)
+   dev=$(findmnt -T / -n -o source | head -1)
    e2label $dev 'Linux Mint'
 }
 
@@ -336,7 +332,7 @@ run-in-user-session dconf write /org/nemo/desktop/volumes-visible "false"
 run-in-user-session dconf write /org/cinnamon/desktop/background/slideshow/delay 5
 run-in-user-session dconf write /org/cinnamon/desktop/background/slideshow/slideshow-enabled "true"
 run-in-user-session dconf write /org/cinnamon/desktop/background/slideshow/random-order "true"
-run-in-user-session dconf write /org/cinnamon/desktop/background/slideshow/image-source "'xml:///usr/share/cinnamon-background-properties/linuxmint-virginia.xml'"
+run-in-user-session dconf write /org/cinnamon/desktop/background/slideshow/image-source "'xml:///usr/share/cinnamon-background-properties/linuxmint-wilma.xml'"
 #Screen Saver
 run-in-user-session dconf write /org/cinnamon/desktop/session/idle-delay "uint32 0"
 run-in-user-session dconf write /org/cinnamon/desktop/screensaver/lock-enabled "false"
@@ -394,8 +390,11 @@ apt-get -y -qq install gdebi >/dev/null
 echo -e '\033[1;33mInstalling \033[1;34mOpenSSH\033[0m'
 apt-get -y -qq install openssh-server >/dev/null
 
-## Find first non-boot drive and create an FSTAB mount entry.
+## Find Media Files on NTFS Drive and create an FSTAB mount entry.
 dev=$(findmnt -t fuseblk -n -o source | head -1)
+if [ -z "${dev}" ]; then
+	dev=$(findmnt -t ntfs3 -n -o source | head -1)
+fi
 uuid=$(blkid -s UUID $dev | cut -f2 -d':' | cut -c2-)
 mountline=$uuid' /mnt/shared_media auto nosuid,nodev,nofail 0 0'
 if ! grep -Fxq $uuid' /mnt/shared_media auto nosuid,nodev,nofail 0 0' /etc/fstab
@@ -420,14 +419,13 @@ get-snapd
 get-zoom
 fix-desktop-error
 get-skype
-grub-customizer
 bootdrivelabel
 desktop-settings
 
 echo "MEDIAPC" > /etc/hostname
 
 echo -e '\033[1;33mUpdating   \033[1;34mUser Permissions\033[0m'
-chmod -R 0777 /home
+chmod -Rf 0777 /home
 
 echo -e '\033[1;33mApplying Updates...\033[0m'
 apt-get -y -qq install -f >/dev/null
