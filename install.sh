@@ -176,9 +176,10 @@ echo -e 'Name[en_AU]=Conky'>>/home/$currentuser/.config/autostart/conky.desktop
 echo -e 'Comment[en_AU]=System information tool'>>/home/$currentuser/.config/autostart/conky.desktop
 echo -e 'X-GNOME-Autostart-Delay=5'>>/home/$currentuser/.config/autostart/conky.desktop
 ## HDSentinel
-wget -q -O /tmp/hdsentinel.gz https://www.hdsentinel.com/hdslin/hdsentinel-019c-x64.gz
-gunzip -d /tmp/hdsentinel.gz
-mv -f /tmp/hdsentinel /bin
+wget -q -O /tmp/hdsentinel.zip https://www.hdsentinel.com/hdslin/hdsentinel-020c-x64.zip
+unzip -oq /tmp/hdsentinel.zip -d /tmp
+mv -f /tmp/HDSentinel /bin/hdsentinel
+rm -f /tmp/hdsentinel.zip
 chmod 0777 -f /bin/hdsentinel
 if ! grep -Fxq $currentuser" ALL=NOPASSWD: /bin/hdsentinel" /etc/sudoers
 then

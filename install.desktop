@@ -1,6 +1,6 @@
 [Desktop Entry]
-Name=Install KODI 21.0 (Omega) Media Centre
-Comment=Installs KODI 21.0 (Omega) Media Centre and other software
+Name=Install KODI 21.1 (Omega) Media Centre
+Comment=Installs KODI 21.1 (Omega) Media Centre and other software
 Exec=gnome-terminal -- sh -c 'cd "'"$(dirname %k)"'"; sudo bash ./install.sh'
 Icon=org.gnome.DiskUtility
 Type=Application
