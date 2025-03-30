@@ -308,7 +308,7 @@ fi
 function get-skype() {
 echo -e '\033[1;33mInstalling \033[1;34mSkype Video Commmunications\033[0m'
 snap install skype
-cp -f /var/lib/snapd/desktop/applications/skype_skypeforlinux.desktop /home/$currentuser/Desktop
+ln -s /var/lib/snapd/desktop/applications/skype_skypeforlinux.desktop /home/$currentuser/Desktop
 if [ -f /home/$currentuser/snap/skype/current/.config/autostart/skypeforlinux.desktop ]; then
 	rm -f /home/$currentuser/snap/skype/current/.config/autostart/skypeforlinux.desktop
 fi
