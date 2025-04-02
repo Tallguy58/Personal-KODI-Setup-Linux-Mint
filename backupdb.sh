@@ -19,7 +19,7 @@ echo -e "\033[1;33mUser \"$currentuser\"... \033[1;34mBackup User Profile\033[0m
 tar -zcvf "profile-backup.tar.gz" "/home/$currentuser/"
 
 ## Restore User Files
-ln -s /var/lib/snapd/desktop/applications/skype_skypeforlinux.desktop /home/$currentuser/Desktop
+cp -f /var/lib/snapd/desktop/applications/skype_skypeforlinux.desktop /home/$currentuser/Desktop
 
 ## Update Permissions
 chmod -Rf 0777 /home
