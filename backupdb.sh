@@ -6,20 +6,23 @@ currentuser=$(users | awk '{print $1}')
 chmod -Rf 0777 /home
 
 ## Delete User Files
-rm -rf /home/$currentuser/.config/pulse
-rm -rf /home/$currentuser/.config/session
-rm -f /home/$currentuser/.sudo_as_admin_successful
-rm -f /home/$currentuser/.bash_history
-rm -f /home/$currentuser/.xsession-errors
-rm -f /home/$currentuser/.xsession-errors.old
-rm -f /home/$currentuser/Desktop/skype_skypeforlinux.desktop
+echo '/home/'$currentuser'/.config/pulse'>/tmp/file.lst
+echo '/home/'$currentuser'/.config/session'>>/tmp/file.lst
+echo '/home/'$currentuser'/.sudo_as_admin_successful'>>/tmp/file.lst
+echo '/home/'$currentuser'/.bash_history'>>/tmp/file.lst
+echo '/home/'$currentuser'/.var/app/tv.kodi.Kodi/data/userdata/keymaps/keyboard.xml'>>/tmp/file.lst
+echo '/home/'$currentuser'/.xsession-errors'>>/tmp/file.lst
+echo '/home/'$currentuser'/.xsession-errors.old'>>/tmp/file.lst
+echo '/home/'$currentuser'/Desktop/duc.desktop'>>/tmp/file.lst
+echo '/home/'$currentuser'/Desktop/org.kde.krusader.desktop'>>/tmp/file.lst
+echo '/home/'$currentuser'/Desktop/Zoom.desktop'>>/tmp/file.lst
+echo '/home/'$currentuser'/Desktop/skype_skypeforlinux.desktop'>>/tmp/file.lst
+echo '/home/'$currentuser'/Desktop/Games/gnubg.desktop'>>/tmp/file.lst
+echo '/home/'$currentuser'/Desktop/Games/org.gnome.Mahjongg.desktop'>>/tmp/file.lst
+echo '/home/'$currentuser'/Desktop/Games'>>/tmp/file.lst
+echo '/home/'$currentuser'/Desktop'>>/tmp/file.lst
 
 ## Backup User Profile...
 echo -e "\033[1;33mUser \"$currentuser\"... \033[1;34mBackup User Profile\033[0m"
-tar -zcvf "profile-backup.tar.gz" "/home/$currentuser/"
-
-## Restore User Files
-cp -f /var/lib/snapd/desktop/applications/skype_skypeforlinux.desktop /home/$currentuser/Desktop
-
-## Update Permissions
-chmod -Rf 0777 /home
+tar --exclude-from=/tmp/file.lst -zcvf profile-backup.tar.gz --absolute-names '/home/'$currentuser'/'
+rm -f /tmp/file.lst
