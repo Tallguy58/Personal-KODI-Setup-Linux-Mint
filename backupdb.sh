@@ -26,5 +26,5 @@ echo '/home/'$currentuser'/Videos'>>/tmp/file.lst
 
 ## Backup User Profile...
 echo -e "\033[1;33mUser \"$currentuser\"... \033[1;34mBackup User Profile\033[0m"
-tar --exclude={'*.log','*.tmp'} --exclude-from=/tmp/file.lst -zcvf profile-backup.tar.gz --absolute-names '/home/'$currentuser'/'
+tar --exclude='*.log' --exclude='*.tmp' --exclude-from=/tmp/file.lst -zcvf profile-backup.tar.gz --absolute-names '/home/'$currentuser'/'
 rm -f /tmp/file.lst
