@@ -186,7 +186,7 @@ echo -e 'Name[en_AU]=Conky'>>/home/$currentuser/.config/autostart/conky.desktop
 echo -e 'Comment[en_AU]=System information tool'>>/home/$currentuser/.config/autostart/conky.desktop
 echo -e 'X-GNOME-Autostart-Delay=5'>>/home/$currentuser/.config/autostart/conky.desktop
 ## HDSentinel
-wget -q -O /tmp/hdsentinel.zip https://www.hdsentinel.com/hdslin/hdsentinel-020c-x64.zip
+wget -qO /tmp/hdsentinel.zip https://www.hdsentinel.com/hdslin/hdsentinel-020c-x64.zip
 unzip -oq /tmp/hdsentinel.zip -d /tmp
 mv -f /tmp/HDSentinel /bin/hdsentinel
 rm -f /tmp/hdsentinel.zip
@@ -298,7 +298,7 @@ apt-get -y -qq install libxcb-keysyms1 >/dev/null
 apt-get -y -qq install libxcb-xtest0 >/dev/null
 apt-get -y -qq install libxcb-cursor0 >/dev/null
 apt-get -y -qq install ibus >/dev/null
-wget -q -O /tmp/zoom_amd64.deb https://zoom.us/client/latest/zoom_amd64.deb >/dev/null
+wget -qO /tmp/zoom_amd64.deb https://zoom.us/client/latest/zoom_amd64.deb >/dev/null
 dpkg -i /tmp/zoom_amd64.deb >/dev/null
 rm -f /tmp/zoom_amd64.deb
 cp -f /usr/share/applications/Zoom.desktop /home/$currentuser/Desktop
@@ -315,13 +315,14 @@ if [ -f /usr/share/applications/org.kde.kdeconnect_open.desktop ]; then
 fi
 }
 
-function get-skype() {
-echo -e '\033[1;33mInstalling \033[1;34mSkype Video Commmunications\033[0m'
-snap install skype
-cp -f /var/lib/snapd/desktop/applications/skype_skypeforlinux.desktop /home/$currentuser/Desktop
-if [ -f /home/$currentuser/snap/skype/current/.config/autostart/skypeforlinux.desktop ]; then
-	rm -f /home/$currentuser/snap/skype/current/.config/autostart/skypeforlinux.desktop
-fi
+function get-teams() {
+echo -e '\033[1;33mInstalling \033[1;34mMicrosoft Teams\033[0m'
+mkdir -p /etc/apt/keyrings
+wget -qO /etc/apt/keyrings/teams-for-linux.asc https://repo.teamsforlinux.de/teams-for-linux.asc >/dev/null
+echo -e "Types: deb\nURIs: https://repo.teamsforlinux.de/debian/\nSuites: stable\nComponents: main\nSigned-By: /etc/apt/keyrings/teams-for-linux.asc\nArchitectures: amd64" >/etc/apt/sources.list.d/teams-for-linux-packages.sources
+apt-get -y -qq update
+apt-get -y -qq install teams-for-linux
+cp -f /usr/share/applications/teams-for-linux.desktop /home/$currentuser/Desktop
 }
 
 function bootdrivelabel() {
@@ -429,7 +430,7 @@ get-clamav
 get-snapd
 get-zoom
 fix-desktop-error
-get-skype
+get-teams
 bootdrivelabel
 desktop-settings
 
