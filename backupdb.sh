@@ -14,7 +14,7 @@ echo '/home/'$currentuser'/.xsession-errors.old'>>/tmp/file.lst
 echo '/home/'$currentuser'/.config/autostart'>>/tmp/file.lst
 echo '/home/'$currentuser'/.config/pulse'>>/tmp/file.lst
 echo '/home/'$currentuser'/.config/session'>>/tmp/file.lst
-echo '/home/'$currentuser'/.var/app/tv.kodi.Kodi/data/userdata/keymaps'>>/tmp/file.lst
+echo '/home/'$currentuser'/.var/app/tv.kodi.Kodi/data/userdata/keymaps/keyboard.xml'>>/tmp/file.lst
 echo '/home/'$currentuser'/Desktop'>>/tmp/file.lst
 echo '/home/'$currentuser'/Documents'>>/tmp/file.lst
 echo '/home/'$currentuser'/Downloads'>>/tmp/file.lst
