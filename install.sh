@@ -269,14 +269,6 @@ apt-get -y -qq install clamav-freshclam >/dev/null
 apt-get -y -qq install clamtk >/dev/null
 }
 
-function get-snapd() {
-echo -e '\033[1;33mInstalling \033[1;34mSnapD\033[0m'
-if [ -f /etc/apt/preferences.d/nosnap.pref ]; then
-    rm /etc/apt/preferences.d/nosnap.pref
-fi
-apt-get -y -qq install snapd >/dev/null
-}
-
 function get-zoom() {
 echo -e '\033[1;33mInstalling \033[1;34mZoom Video Communications\033[0m'
 apt-get -y -qq install libglib2.0-0 >/dev/null
@@ -427,7 +419,6 @@ get-bleachbit
 get-duc
 get-SimpleHTTPServerWithUpload
 get-clamav
-get-snapd
 get-zoom
 fix-desktop-error
 get-teams
