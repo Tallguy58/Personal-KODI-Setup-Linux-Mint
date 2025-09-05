@@ -48,13 +48,8 @@ function get-kodi() {
 clear
 echo -e '\033[1;33mInstalling \033[1;34mKODI Media Centre\033[0m'
 flatpak install -y --noninteractive flathub tv.kodi.Kodi
-echo '[Seat:*]'>/etc/lightdm/lightdm.conf
-echo 'autologin-guest=false'>>/etc/lightdm/lightdm.conf
-echo 'autologin-user='$currentuser>>/etc/lightdm/lightdm.conf
-echo 'autologin-user-timeout=0'>>/etc/lightdm/lightdm.conf
-echo '[SeatDefaults]'>/etc/lightdm/lightdm.conf.d/70-linuxmint.conf
-echo 'user-session=cinnamon'>>/etc/lightdm/lightdm.conf.d/70-linuxmint.conf
-echo 'session-setup-script=/usr/bin/flatpak run --branch=stable --arch=x86_64 --command=kodi tv.kodi.Kodi --standalone'>>/etc/lightdm/lightdm.conf.d/70-linuxmint.conf
+echo -e "[Seat:*]\nautologin-guest=false\nautologin-user="$currentuser"\nautologin-user-timeout=1">/etc/lightdm/lightdm.conf
+echo -e "[SeatDefaults]\nuser-session=cinnamon\nsession-setup-script=/usr/bin/flatpak run --branch=stable --arch=x86_64 --command=kodi tv.kodi.Kodi --standalone">/etc/lightdm/lightdm.conf.d/70-linuxmint.conf
 
 ## Keymap settings...
 mkdir -p /home/$currentuser/.var/app/tv.kodi.Kodi/data/userdata/keymaps/
@@ -424,6 +419,12 @@ fix-desktop-error
 get-teams
 bootdrivelabel
 desktop-settings
+
+## login interactively without entering your password
+groupadd -r nopasswdlogin
+groupadd -r autologin
+gpasswd -a $currentuser nopasswdlogin
+gpasswd -a $currentuser autologin
 
 echo "MEDIAPC" > /etc/hostname
 
