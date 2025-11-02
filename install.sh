@@ -48,7 +48,7 @@ function get-kodi() {
 clear
 echo -e '\033[1;33mInstalling \033[1;34mKODI Media Centre\033[0m'
 flatpak install -y --noninteractive flathub tv.kodi.Kodi
-echo -e "[Seat:*]\nautologin-guest=false\ngreeter-show-manual-login=false\ngreeter-hide-users=false\nautologin-user="$currentuser"\nautologin-user-timeout=1">/etc/lightdm/lightdm.conf
+echo -e "[Seat:*]\nautologin-guest=false\ngreeter-show-manual-login=false\ngreeter-hide-users=false\ngreeter-session=lightdm-slick-greeter\nautologin-user="$currentuser"\nautologin-user-timeout=0">/etc/lightdm/lightdm.conf
 echo -e "[SeatDefaults]\nuser-session=cinnamon\nsession-setup-script=/usr/bin/flatpak run --branch=stable --arch=x86_64 --command=kodi tv.kodi.Kodi --standalone">/etc/lightdm/lightdm.conf.d/70-linuxmint.conf
 
 ## Keymap settings...
