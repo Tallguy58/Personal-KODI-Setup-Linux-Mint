@@ -48,7 +48,6 @@ function get-kodi() {
 clear
 echo -e '\033[1;33mInstalling \033[1;34mKODI Media Centre\033[0m'
 flatpak install -y --noninteractive flathub tv.kodi.Kodi
-echo -e "[Seat:*]\nautologin-guest=false\ngreeter-show-manual-login=false\ngreeter-hide-users=false\ngreeter-session=lightdm-slick-greeter\nautologin-user="$currentuser"\nautologin-user-timeout=0">/etc/lightdm/lightdm.conf
 echo -e "[SeatDefaults]\nuser-session=cinnamon\nsession-setup-script=/usr/bin/flatpak run --branch=stable --arch=x86_64 --command=kodi tv.kodi.Kodi --standalone">/etc/lightdm/lightdm.conf.d/70-linuxmint.conf
 
 ## Keymap settings...
@@ -425,8 +424,15 @@ groupadd -r nopasswdlogin
 groupadd -r autologin
 gpasswd -a $currentuser nopasswdlogin
 gpasswd -a $currentuser autologin
+## Fix autologin greeter
+echo -e "[Seat:*]\nautologin-guest=false\ngreeter-show-manual-login=false\ngreeter-hide-users=false\ngreeter-session=lightdm-slick-greeter\nautologin-user="$currentuser"\nautologin-user-timeout=0">/etc/lightdm/lightdm.conf
 
-echo "MEDIAPC" > /etc/hostname
+## Change Hostname
+echo "MEDIAPC">/etc/hostname
+
+## Change IP Address/Default Gateway of Network adapter
+netuuid=$(nmcli c show --active | grep -v '^lo\s' | tail -n 1 | cut -c23-58)
+nmcli c mod $netuuid ipv4.method manual ipv4.addresses "192.168.0.5/24" ipv4.gateway "192.168.0.1" ipv4.dns "8.8.8.8,8.8.4.4"
 
 echo -e '\033[1;33mUpdating   \033[1;34mUser Permissions\033[0m'
 chmod -Rf 0777 /home
