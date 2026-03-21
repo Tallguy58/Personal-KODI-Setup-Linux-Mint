@@ -10,15 +10,6 @@ function run-in-user-session() {
     sudo -Hu "$_username" env "${_environment[@]}" "$@"
 }
 
-remove-package() {
-if dpkg -s $1 >/dev/null 2>&1; then
-    echo -e '\033[1;33mRemoving   \033[1;31m'$1' \033[0m\c'
-    sudo apt-get -y -qq purge $1 >/dev/null
-    sudo apt-get -y -qq autoremove >/dev/null
-    echo -e '\033[1;36m... OK\033[0m'
-fi
-}
-
 install-package() {
 if ! dpkg -s $1 >/dev/null 2>&1; then
     echo -e '\033[1;33mInstalling \033[1;32m'$1' \033[0m\c'
