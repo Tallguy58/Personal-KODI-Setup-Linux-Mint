@@ -10,29 +10,46 @@ function run-in-user-session() {
     sudo -Hu "$_username" env "${_environment[@]}" "$@"
 }
 
+remove-package() {
+if dpkg -s $1 >/dev/null 2>&1; then
+    echo -e '\033[1;33mRemoving   \033[1;31m'$1' \033[0m\c'
+    sudo apt-get -y -qq purge $1 >/dev/null
+    sudo apt-get -y -qq autoremove >/dev/null
+    echo -e '\033[1;36m... OK\033[0m'
+fi
+}
+
+install-package() {
+if ! dpkg -s $1 >/dev/null 2>&1; then
+    echo -e '\033[1;33mInstalling \033[1;32m'$1' \033[0m\c'
+    apt-get -y -qq install $1 >/dev/null
+    echo -e '\033[1;36m... OK\033[0m'
+fi
+}
+
 function get-perl() {
 echo -e '\033[1;33mInstalling \033[1;34mPerl\033[0m'
-apt-get -y -qq install perl >/dev/null
-apt-get -y -qq install libnet-ssleay-perl >/dev/null
-apt-get -y -qq install libauthen-pam-perl >/dev/null
-apt-get -y -qq install libio-pty-perl >/dev/null
+install-package perl
+install-package libnet-ssleay-perl
+install-package libauthen-pam-perl
+install-package libio-pty-perl
 }
 
 function get-samba() {
 echo -e '\033[1;33mInstalling \033[1;34mSMB File Sharing\033[0m'
 apt-get -y -qq install samba --install-recommends >/dev/null
-apt-get -y -qq install samba-common-bin >/dev/null
-apt-get -y -qq install samba-dsdb-modules >/dev/null
-apt-get -y -qq install samba-libs >/dev/null
-apt-get -y -qq install samba-vfs-modules >/dev/null
-apt-get -y -qq install smbclient >/dev/null
-apt-get -y -qq install autofs >/dev/null
-apt-get -y -qq install cifs-utils >/dev/null
-apt-get -y -qq install caja-share >/dev/null
-apt-get -y -qq install libsmbclient >/dev/null
-apt-get -y -qq install libwbclient0 >/dev/null
-apt-get -y -qq install winbind >/dev/null
-apt-get -y -qq install libnss-winbind >/dev/null
+install-package samba-common-bin
+install-package samba-dsdb-modules
+install-package samba-libs
+install-package samba-vfs-modules
+install-package smbclient
+install-package autofs
+install-package cifs-utils
+install-package caja-share
+install-package libsmbclient0
+install-package libwbclient0
+install-package winbind
+install-package libnss-winbind
 mkdir -p /etc/samba
 cp -f files/smb.conf /etc/samba
 touch /etc/libuser.conf
@@ -45,7 +62,6 @@ run-in-user-session net usershare add Shared_Media /mnt/shared_media "Media Cent
 }
 
 function get-kodi() {
-clear
 echo -e '\033[1;33mInstalling \033[1;34mKODI Media Centre\033[0m'
 flatpak install -y --noninteractive flathub tv.kodi.Kodi
 echo -e "[SeatDefaults]\nuser-session=cinnamon\nsession-setup-script=/usr/bin/flatpak run --branch=stable --arch=x86_64 --command=kodi tv.kodi.Kodi --standalone">/etc/lightdm/lightdm.conf.d/70-linuxmint.conf
@@ -81,31 +97,30 @@ echo -e '</keymap>'>>/home/$currentuser/.var/app/tv.kodi.Kodi/data/userdata/keym
 }
 
 function get-php() {
-clear
 echo -e '\033[1;33mInstalling \033[1;34mApache\033[0m'
-apt-get -y -qq install apache2 >/dev/null
+install-package apache2
 echo -e '\033[1;33mInstalling \033[1;34mPHP 7.4\033[0m'
 add-apt-repository -y ppa:ondrej/php
 apt-get -y -qq update >/dev/null
 apt-get -y -qq upgrade >/dev/null
-apt-get -y -qq install php7.4 >/dev/null
-apt-get -y -qq install php7.4-cli >/dev/null
-apt-get -y -qq install php7.4-json >/dev/null
-apt-get -y -qq install php7.4-common >/dev/null
-apt-get -y -qq install php7.4-mysql >/dev/null
-apt-get -y -qq install php7.4-zip >/dev/null
-apt-get -y -qq install php7.4-gd >/dev/null
-apt-get -y -qq install php7.4-mbstring >/dev/null
-apt-get -y -qq install php7.4-curl >/dev/null
-apt-get -y -qq install php7.4-xml >/dev/null
-apt-get -y -qq install php7.4-bcmath >/dev/null
-apt-get -y -qq install php7.4-opcache >/dev/null
-apt-get -y -qq install php7.4-fpm >/dev/null
-apt-get -y -qq install php7.4-intl >/dev/null
-apt-get -y -qq install php7.4-simplexml >/dev/null
-apt-get -y -qq install php7.4-bz2 >/dev/null
-apt-get -y -qq install php7.4-cgi >/dev/null
-apt-get -y -qq install libapache2-mod-php7.4 >/dev/null
+install-package php7.4
+install-package php7.4-cli
+install-package php7.4-json
+install-package php7.4-common
+install-package php7.4-mysql
+install-package php7.4-zip
+install-package php7.4-gd
+install-package php7.4-mbstring
+install-package php7.4-curl
+install-package php7.4-xml
+install-package php7.4-bcmath
+install-package php7.4-opcache
+install-package php7.4-fpm
+install-package php7.4-intl
+install-package php7.4-xml
+install-package php7.4-bz2
+install-package php7.4-cgi
+install-package libapache2-mod-php7.4
 a2enmod php7.4
 update-alternatives --set php /usr/bin/php7.4
 update-alternatives --set phar /usr/bin/phar7.4
@@ -122,44 +137,42 @@ systemctl -q enable apache2
 }
 
 function get-krusader() {
-clear
 echo -e '\033[1;33mInstalling \033[1;34mKrusader Twin File Browser\033[0m'
-apt-get -y -qq install krusader >/dev/null
-apt-get -y -qq install libc6 >/dev/null
-apt-get -y -qq install libgcc1 >/dev/null
-apt-get -y -qq install zlib1g >/dev/null
-apt-get -y -qq install libgcc1 >/dev/null
-apt-get -y -qq install cpio >/dev/null
-apt-get -y -qq install konsole >/dev/null
-apt-get -y -qq install okteta >/dev/null
-apt-get -y -qq install rpm >/dev/null
+install-package krusader
+install-package libc6
+install-package libgcc-s1
+install-package zlib1g
+install-package cpio
+install-package konsole
+install-package okteta
+install-package rpm
 echo -e '\033[1;33mInstalling \033[1;34mKrusader Twin File Browser\033[1;36m - Tools\033[0m'
-apt-get -y -qq install kdiff3 >/dev/null
-apt-get -y -qq install kget >/dev/null
-apt-get -y -qq install kompare >/dev/null
-apt-get -y -qq install krename >/dev/null
-apt-get -y -qq install md5deep >/dev/null
-apt-get -y -qq install kmail >/dev/null
+install-package kdiff3
+install-package kget
+install-package kompare
+install-package krename
+install-package hashdeep
+install-package kmail
 echo -e '\033[1;33mInstalling \033[1;34mKrusader Twin File Browser\033[1;36m - Archivers\033[0m'
-apt-get -y -qq install arj >/dev/null
-apt-get -y -qq install ark >/dev/null
-apt-get -y -qq install bzip2 >/dev/null
-apt-get -y -qq install lhasa >/dev/null
-apt-get -y -qq install p7zip >/dev/null
-apt-get -y -qq install rar >/dev/null
-apt-get -y -qq install unace >/dev/null
-apt-get -y -qq install unrar >/dev/null
-apt-get -y -qq install unzip >/dev/null
-apt-get -y -qq install zip >/dev/null
+install-package arj
+install-package ark
+install-package bzip2
+install-package lhasa
+install-package p7zip
+install-package rar
+install-package unace
+install-package unrar
+install-package unzip
+install-package zip
 cp -f /usr/share/applications/org.kde.krusader.desktop /home/$currentuser/Desktop
 sed -i "s/Exec=krusader -qwindowtitle %c %u/Exec=krusader -qwindowtitle %c %u --left='\/media\/$currentuser\/' --right='\/mnt\/shared_media\/'/g" /home/$currentuser/Desktop/org.kde.krusader.desktop
 }
 
 function get-games() {
 echo -e '\033[1;33mInstalling \033[1;34mBackgammon Game\033[0m'
-apt-get -y -qq install gnubg >/dev/null
+install-package gnubg
 echo -e '\033[1;33mInstalling \033[1;34mMahjongg Game\033[0m'
-apt-get -y -qq install gnome-mahjongg >/dev/null
+install-package gnome-mahjongg
 ## Create Shortcuts
 mkdir -p /home/$currentuser/Desktop/Games
 cp -f /usr/share/applications/gnubg.desktop /home/$currentuser/Desktop/Games
@@ -168,7 +181,7 @@ cp -f /usr/share/applications/org.gnome.Mahjongg.desktop /home/$currentuser/Desk
 
 function get-conky() {
 echo -e '\033[1;33mInstalling \033[1;34mConky\033[0m'
-apt-get -y -qq install conky-all >/dev/null
+install-package conky-all
 cp -f files/conky.conf /home/$currentuser/.conkyrc
 echo -e '[Desktop Entry]'>/home/$currentuser/.config/autostart/conky.desktop
 echo -e 'Type=Application'>>/home/$currentuser/.config/autostart/conky.desktop
@@ -201,7 +214,7 @@ fi
 
 function get-bleachbit() {
 echo -e '\033[1;33mInstalling \033[1;34mBleachbit\033[0m'
-apt-get -y -qq install bleachbit >/dev/null
+install-package bleachbit
 if ! grep -Fxq $currentuser" ALL=NOPASSWD: /usr/bin/bleachbit" /etc/sudoers
 then
     echo $currentuser" ALL=NOPASSWD: /usr/bin/bleachbit">>/etc/sudoers
@@ -210,7 +223,7 @@ fi
 
 function get-duc() {
 echo -e '\033[1;33mInstalling \033[1;34mDisc Usage Graph\033[0m'
-apt-get -y -qq install duc >/dev/null
+install-package duc
 ## Create BASH Script
 echo -e '#!/bin/bash'>/bin/duc.sh
 echo -e 'duc index /mnt/shared_media'>>/bin/duc.sh
@@ -257,33 +270,34 @@ systemctl -q enable SimpleHTTPServerWithUpload
 
 function get-clamav() {
 echo -e '\033[1;33mInstalling \033[1;34mClam Anti-Virus\033[0m'
-apt-get -y -qq install clamav >/dev/null
-apt-get -y -qq install clamav-daemon >/dev/null
-apt-get -y -qq install clamav-freshclam >/dev/null
-apt-get -y -qq install clamtk >/dev/null
+install-package clamav
+install-package clamav-daemon
+install-package clamav-freshclam
+install-package clamtk
 }
 
 function get-zoom() {
 echo -e '\033[1;33mInstalling \033[1;34mZoom Video Communications\033[0m'
-apt-get -y -qq install libglib2.0-0 >/dev/null
-apt-get -y -qq install libgstreamer-plugins-base1.0 >/dev/null
-apt-get -y -qq install libxcb-shape0 >/dev/null
-apt-get -y -qq install libxcb-shm0 >/dev/null
-apt-get -y -qq install libxcb-xfixes0 >/dev/null
-apt-get -y -qq install libxcb-randr0 >/dev/null
-apt-get -y -qq install libxcb-image0 >/dev/null
-apt-get -y -qq install libfontconfig1 >/dev/null
-apt-get -y -qq install libxi6 >/dev/null
-apt-get -y -qq install libsm6 >/dev/null
-apt-get -y -qq install libxrender1 >/dev/null
-apt-get -y -qq install libpulse0 >/dev/null
-apt-get -y -qq install libxcomposite1 >/dev/null
-apt-get -y -qq install libxslt1.1 >/dev/null
-apt-get -y -qq install libsqlite3-0 >/dev/null
-apt-get -y -qq install libxcb-keysyms1 >/dev/null
-apt-get -y -qq install libxcb-xtest0 >/dev/null
-apt-get -y -qq install libxcb-cursor0 >/dev/null
-apt-get -y -qq install ibus >/dev/null
+install-package libglib2.0-0t64
+install-package libgstreamer-plugins-base1.0-dev
+install-package libgstreamer-plugins-base1.0-0
+install-package libxcb-shape0
+install-package libxcb-shm0
+install-package libxcb-xfixes0
+install-package libxcb-randr0
+install-package libxcb-image0
+install-package libfontconfig1
+install-package libxi6
+install-package libsm6
+install-package libxrender1
+install-package libpulse0
+install-package libxcomposite1
+install-package libxslt1.1
+install-package libsqlite3-0
+install-package libxcb-keysyms1
+install-package libxcb-xtest0
+install-package libxcb-cursor0
+install-package ibus
 wget -qO /tmp/zoom_amd64.deb https://zoom.us/client/latest/zoom_amd64.deb >/dev/null
 dpkg -i /tmp/zoom_amd64.deb >/dev/null
 rm -f /tmp/zoom_amd64.deb
@@ -306,8 +320,8 @@ echo -e '\033[1;33mInstalling \033[1;34mMicrosoft Teams\033[0m'
 mkdir -p /etc/apt/keyrings
 wget -qO /etc/apt/keyrings/teams-for-linux.asc https://repo.teamsforlinux.de/teams-for-linux.asc >/dev/null
 echo -e "Types: deb\nURIs: https://repo.teamsforlinux.de/debian/\nSuites: stable\nComponents: main\nSigned-By: /etc/apt/keyrings/teams-for-linux.asc\nArchitectures: amd64" >/etc/apt/sources.list.d/teams-for-linux-packages.sources
-apt-get -y -qq update
-apt-get -y -qq install teams-for-linux
+apt-get -y -qq update >/dev/null
+install-package teams-for-linux
 cp -f /usr/share/applications/teams-for-linux.desktop /home/$currentuser/Desktop
 }
 
@@ -359,52 +373,45 @@ run-in-user-session dconf write /org/cinnamon/desktop/interface/clock-use-24h "f
 history -c
 reset
 wmctrl -r :ACTIVE: -e 0,50,50,1500,800
-echo -e '\ec\033[1;33mInstalling \033[1;34mCommon Utilities\033[0m'
-apt-get -y -qq install software-properties-common >/dev/null
-echo -e '\033[1;33mInstalling \033[1;34mStandard Java Runtime\033[0m'
-apt-get -y -qq install default-jre >/dev/null
-echo -e '\033[1;33mInstalling \033[1;34mGNOME Text Editor\033[0m'
-apt-get -y -qq install gedit >/dev/null
-echo -e '\033[1;33mInstalling \033[1;34mGNU C Library\033[0m'
-apt-get -y -qq install libc6 >/dev/null
-echo -e '\033[1;33mInstalling \033[1;34mDeborphan\033[0m'
-apt-get -y -qq install deborphan >/dev/null
-echo -e '\033[1;33mInstalling \033[1;34mlsscsi\033[0m'
-apt-get -y -qq install lsscsi >/dev/null
-echo -e '\033[1;33mInstalling \033[1;34mUseful Linux Utilities\033[0m'
-apt-get -y -qq install moreutils >/dev/null
-echo -e '\033[1;33mInstalling \033[1;34mPulse Audio Volume Control\033[0m'
-apt-get -y -qq install pavucontrol >/dev/null
-echo -e '\033[1;33mInstalling \033[1;34mNTFS Driver\033[0m'
-apt-get -y -qq install ntfs-3g >/dev/null
-echo -e '\033[1;33mInstalling \033[1;34mNetwork Mapper\033[0m'
-apt-get -y -qq install nmap >/dev/null
-echo -e '\033[1;33mInstalling \033[1;34mOpenSSL\033[0m'
-apt-get -y -qq install openssl >/dev/null
-echo -e '\033[1;33mInstalling \033[1;34mlibpam-runtime\033[0m'
-apt-get -y -qq install libpam-runtime >/dev/null
-echo -e '\033[1;33mInstalling \033[1;34mGDebi\033[0m'
-apt-get -y -qq install gdebi >/dev/null
-echo -e '\033[1;33mInstalling \033[1;34mOpenSSH\033[0m'
-apt-get -y -qq install openssh-server >/dev/null
+echo -e '\033[1;33mInstalling \033[1;34mCommon Utilities\033[0m'
+install-package software-properties-common
+install-package default-jre
+install-package gedit
+install-package libc6
+install-package libgd3
+install-package deborphan
+install-package lsscsi
+install-package moreutils
+install-package pavucontrol
+install-package ntfs-3g
+install-package nmap
+install-package openssl
+install-package libpam-runtime
+install-package gdebi
+install-package openssh-server
 
-## Find Media Files on NTFS Drive and create an FSTAB mount entry.
+
+## FIND MEDIA FILES ON NTFS DRIVE AND CREATE AN FSTAB MOUNT ENTRY.
+mkdir -p /mnt/shared_media
 dev=$(findmnt -t fuseblk -n -o source | head -1)
 if [ -z "${dev}" ]; then
 	dev=$(findmnt -t ntfs3 -n -o source | head -1)
 fi
-uuid=$(blkid -s UUID $dev | cut -f2 -d':' | cut -c2-)
-mountline=$uuid' /mnt/shared_media auto nosuid,nodev,nofail 0 0'
-if ! grep -Fxq $uuid' /mnt/shared_media auto nosuid,nodev,nofail 0 0' /etc/fstab
-then
-	echo $mountline>>/etc/fstab
-	mkdir -p /mnt/shared_media
+if [ -n "${dev}" ]; then
+    uuid=$(blkid -s UUID $dev | cut -f2 -d':' | cut -c2-)
+    mountline=$uuid' /mnt/shared_media auto nosuid,nodev,nofail 0 0'
+    if ! grep -Fxq $uuid' /mnt/shared_media auto nosuid,nodev,nofail 0 0' /etc/fstab
+    then
+        echo $mountline>>/etc/fstab
+    fi
+else
+	echo -e '\033[1;31mShared Media Drive not located!\033[0m'
 fi
 
 # Start Process...
 get-perl
 get-samba
-get-kodi
+## get-kodi
 get-php
 get-krusader
 get-games
