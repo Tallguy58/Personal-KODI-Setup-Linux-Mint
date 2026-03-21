@@ -381,7 +381,6 @@ install-package libpam-runtime
 install-package gdebi
 install-package openssh-server
 
-
 ## FIND MEDIA FILES ON NTFS DRIVE AND CREATE AN FSTAB MOUNT ENTRY.
 mkdir -p /mnt/shared_media
 dev=$(findmnt -t fuseblk -n -o source | head -1)
