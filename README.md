@@ -1,15 +1,13 @@
 # Personal KODI Setup
 Installs the following packages on Linux Mint...
 * Apache2
-* Bleachbit
-* Conky
-* Games
-    * Backgammon
-    * Mahjong
-* KODI
-* Krusader
-* PHP7.4
+* Clam Antivirus
+* Conky Desktop Information Widget
+* KODI Media Centre
+* Krusader File Manager
+* Perl
+* PHP 7.4
 * Samba File Sharing
-* SimpleHTTPUploadServer
+* Simple HTTP Upload Server
 
 Click on the icon labelled "Install KODI Media Centre" to install.
