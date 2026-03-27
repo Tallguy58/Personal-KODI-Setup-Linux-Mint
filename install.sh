@@ -159,17 +159,6 @@ cp -f /usr/share/applications/org.kde.krusader.desktop /home/$currentuser/Deskto
 sed -i "s/Exec=krusader -qwindowtitle %c %u/Exec=krusader -qwindowtitle %c %u --left='\/media\/$currentuser\/' --right='\/mnt\/shared_media\/'/g" /home/$currentuser/Desktop/org.kde.krusader.desktop
 }
 
-function get-games() {
-echo -e '\033[1;33mInstalling \033[1;34mBackgammon Game\033[0m'
-install-package gnubg
-echo -e '\033[1;33mInstalling \033[1;34mMahjongg Game\033[0m'
-install-package gnome-mahjongg
-## Create Shortcuts
-mkdir -p /home/$currentuser/Desktop/Games
-cp -f /usr/share/applications/gnubg.desktop /home/$currentuser/Desktop/Games
-cp -f /usr/share/applications/org.gnome.Mahjongg.desktop /home/$currentuser/Desktop/Games
-}
-
 function get-conky() {
 echo -e '\033[1;33mInstalling \033[1;34mConky\033[0m'
 install-package conky-all
@@ -203,39 +192,6 @@ then
 fi
 }
 
-function get-bleachbit() {
-echo -e '\033[1;33mInstalling \033[1;34mBleachbit\033[0m'
-install-package bleachbit
-if ! grep -Fxq $currentuser" ALL=NOPASSWD: /usr/bin/bleachbit" /etc/sudoers
-then
-    echo $currentuser" ALL=NOPASSWD: /usr/bin/bleachbit">>/etc/sudoers
-fi
-}
-
-function get-duc() {
-echo -e '\033[1;33mInstalling \033[1;34mDisc Usage Graph\033[0m'
-install-package duc
-## Create BASH Script
-echo -e '#!/bin/bash'>/bin/duc.sh
-echo -e 'duc index /mnt/shared_media'>>/bin/duc.sh
-echo -e 'duc gui --dark --gradient /mnt/shared_media'>>/bin/duc.sh
-echo -e "rm /home/$(users | awk '{print $1}')/.duc.db">>/bin/duc.sh
-## Create Desktop Icon
-echo -e '[Desktop Entry]'>/home/$currentuser/Desktop/duc.desktop
-echo -e 'Name=Disk Usage Chart'>>/home/$currentuser/Desktop/duc.desktop
-echo -e 'Comment=Disk Usage Chart'>>/home/$currentuser/Desktop/duc.desktop
-echo -e 'Exec=/bin/bash /bin/duc.sh'>>/home/$currentuser/Desktop/duc.desktop
-echo -e 'Icon=gtk-harddisk'>>/home/$currentuser/Desktop/duc.desktop
-echo -e 'Terminal=false'>>/home/$currentuser/Desktop/duc.desktop
-echo -e 'Type=Application'>>/home/$currentuser/Desktop/duc.desktop
-echo -e 'StartupNotify=true'>>/home/$currentuser/Desktop/duc.desktop
-echo -e 'StartupWMClass=DUC'>>/home/$currentuser/Desktop/duc.desktop
-echo -e 'Encoding=UTF-8'>>/home/$currentuser/Desktop/duc.desktop
-echo -e 'Categories=Application;'>>/home/$currentuser/Desktop/duc.desktop
-echo -e 'Name[en_AU]=Disk Usage Chart'>>/home/$currentuser/Desktop/duc.desktop
-chmod +x -f /bin/duc.sh
-}
-
 function get-SimpleHTTPServerWithUpload() {
 echo -e '\033[1;33mInstalling \033[1;34mSimple HTTP Service with Upload\033[0m'
 cp -f files/SimpleHTTPServerWithUpload.py /bin
@@ -267,34 +223,6 @@ install-package clamav-freshclam
 install-package clamtk
 }
 
-function get-zoom() {
-echo -e '\033[1;33mInstalling \033[1;34mZoom Video Communications\033[0m'
-install-package libglib2.0-0t64
-install-package libgstreamer-plugins-base1.0-dev
-install-package libgstreamer-plugins-base1.0-0
-install-package libxcb-shape0
-install-package libxcb-shm0
-install-package libxcb-xfixes0
-install-package libxcb-randr0
-install-package libxcb-image0
-install-package libfontconfig1
-install-package libxi6
-install-package libsm6
-install-package libxrender1
-install-package libpulse0
-install-package libxcomposite1
-install-package libxslt1.1
-install-package libsqlite3-0
-install-package libxcb-keysyms1
-install-package libxcb-xtest0
-install-package libxcb-cursor0
-install-package ibus
-wget -qO /tmp/zoom_amd64.deb https://zoom.us/client/latest/zoom_amd64.deb >/dev/null
-dpkg -i /tmp/zoom_amd64.deb >/dev/null
-rm -f /tmp/zoom_amd64.deb
-cp -f /usr/share/applications/Zoom.desktop /home/$currentuser/Desktop
-}
-
 function fix-desktop-error() {
 if [ -f /usr/share/applications/org.kde.kdeconnect_open.desktop ]; then
 	if ! grep -Fxq 'MimeType=application/octet-stream;' /usr/share/applications/org.kde.kdeconnect_open.desktop
@@ -304,16 +232,6 @@ if [ -f /usr/share/applications/org.kde.kdeconnect_open.desktop ]; then
 		update-desktop-database
 	fi
 fi
-}
-
-function get-teams() {
-echo -e '\033[1;33mInstalling \033[1;34mMicrosoft Teams\033[0m'
-mkdir -p /etc/apt/keyrings
-wget -qO /etc/apt/keyrings/teams-for-linux.asc https://repo.teamsforlinux.de/teams-for-linux.asc >/dev/null
-echo -e "Types: deb\nURIs: https://repo.teamsforlinux.de/debian/\nSuites: stable\nComponents: main\nSigned-By: /etc/apt/keyrings/teams-for-linux.asc\nArchitectures: amd64" >/etc/apt/sources.list.d/teams-for-linux-packages.sources
-apt-get -y -qq update >/dev/null
-install-package teams-for-linux
-cp -f /usr/share/applications/teams-for-linux.desktop /home/$currentuser/Desktop
 }
 
 function bootdrivelabel() {
@@ -364,6 +282,7 @@ run-in-user-session dconf write /org/cinnamon/desktop/interface/clock-use-24h "f
 history -c
 reset
 wmctrl -r :ACTIVE: -e 0,50,50,1500,800
+xset s off noblank -dpms
 echo -e '\033[1;33mInstalling \033[1;34mCommon Utilities\033[0m'
 install-package software-properties-common
 install-package default-jre
@@ -401,18 +320,13 @@ fi
 # Start Process...
 get-perl
 get-samba
-## get-kodi
+get-kodi
 get-php
 get-krusader
-get-games
 get-conky
-get-bleachbit
-get-duc
 get-SimpleHTTPServerWithUpload
 get-clamav
-get-zoom
 fix-desktop-error
-get-teams
 bootdrivelabel
 desktop-settings
 
