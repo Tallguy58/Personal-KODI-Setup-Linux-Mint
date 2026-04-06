@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=Backup KODI User Profile
-Comment=Backup KODI User Profile
+Comment=Backup KODI & MOZILLA User Profile
 Exec=gnome-terminal -- sh -c 'cd "'"$(dirname %k)"'"; sudo bash ./backupdb.sh'
 Icon=org.gnome.DiskUtility
 Type=Application
