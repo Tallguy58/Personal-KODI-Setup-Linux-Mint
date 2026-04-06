@@ -1,5 +1,5 @@
 [Desktop Entry]
-Name=Restore KODI User Profile
+Name=Restore KODI & MOZILLA User Profile
 Comment=Restore KODI & MOZILLA User Profile
 Exec=gnome-terminal -- sh -c 'cd "'"$(dirname %k)"'"; sudo bash ./restoredb.sh'
 Icon=org.gnome.DiskUtility
