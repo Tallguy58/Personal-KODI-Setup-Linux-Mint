@@ -348,14 +348,21 @@ nmcli c mod "$netid" ipv4.method manual ipv4.addresses "192.168.0.5/24" ipv4.gat
 echo -e '\033[1;33mUpdating   \033[1;34mUser Permissions\033[0m'
 chmod -Rf 0777 /home
 
-echo -e '\033[1;33mApplying Updates...\033[0m'
+echo -e '\033[1;33mFix Broken Dependencies...\033[0m'
 apt-get -y -qq install -f >/dev/null
+echo -e '\033[1;33mFix Broken Installations...\033[0m'
 dpkg --configure -a >/dev/null
+echo -e '\033[1;33mFix Broken Dependencies...\033[0m'
 apt-get -y -qq install -f >/dev/null
+echo -e '\033[1;33mDelete Cached Files...\033[0m'
 apt-get -y -qq clean >/dev/null
+echo -e '\033[1;33mDelete Obsolete Files...\033[0m'
 apt-get -y -qq autoclean >/dev/null
+echo -e '\033[1;33mApplying Updates...\033[0m'
 apt-get -y -qq update >/dev/null
+echo -e '\033[1;33mApplying Upgrades...\033[0m'
 apt-get -y -qq upgrade >/dev/null
+
 systemctl -q daemon-reload
 
 shutdown -r now
