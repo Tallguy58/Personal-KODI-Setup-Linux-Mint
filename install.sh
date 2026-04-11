@@ -93,7 +93,6 @@ install-package apache2
 echo -e '\033[1;33mInstalling \033[1;34mPHP 7.4\033[0m'
 add-apt-repository -y ppa:ondrej/php
 apt-get -y -qq update >/dev/null
-apt-get -y -qq upgrade >/dev/null
 install-package php7.4
 install-package php7.4-cli
 install-package php7.4-json
@@ -361,7 +360,7 @@ apt-get -y -qq autoclean >/dev/null
 echo -e '\033[1;33mApplying Updates...\033[0m'
 apt-get -y -qq update >/dev/null
 echo -e '\033[1;33mApplying Upgrades...\033[0m'
-apt-get -y -qq upgrade >/dev/null
+apt-get -o APT::Get::Always-Include-Phased-Updates=true -y -qq upgrade >/dev/null
 
 systemctl -q daemon-reload
 
