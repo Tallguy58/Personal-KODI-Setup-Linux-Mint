@@ -360,7 +360,7 @@ apt-get -y -qq autoclean >/dev/null
 echo -e '\033[1;33mApplying Updates...\033[0m'
 apt-get -y -qq update >/dev/null
 echo -e '\033[1;33mApplying Upgrades...\033[0m'
-apt-get -o APT::Get::Always-Include-Phased-Updates=true -y -qq upgrade >/dev/null
+apt-get -y -qq --allow-change-held-packages -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" -o APT::Get::Always-Include-Phased-Updates=true upgrade >/dev/null
 
 systemctl -q daemon-reload
 
