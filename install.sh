@@ -293,6 +293,8 @@ install-package lsscsi
 install-package moreutils
 install-package pavucontrol
 install-package ntfs-3g
+install-package dosfstools
+install-package mtools
 install-package nmap
 install-package openssl
 install-package libpam-runtime
