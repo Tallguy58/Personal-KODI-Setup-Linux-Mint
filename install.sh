@@ -302,22 +302,33 @@ install-package libpam-runtime
 install-package gdebi
 install-package openssh-server
 
-## FIND NTFS DRIVE AND CREATE AN FSTAB MOUNT ENTRY.
+## FIND ALL NTFS DRIVES AND CREATE FSTAB MOUNT ENTRIES.
 dev=$(lsblk -o NAME,FSTYPE -n -r | grep "ntfs" | head -n 1 | awk '{print "/dev/"$1}')
-if [ -n "${dev}" ]; then
-	if [ ! -d /mnt/shared_media ]; then
-		mkdir -p /mnt/shared_media
-	fi
-    uuid=$(blkid -s UUID $dev | cut -f2 -d':' | cut -c2-)
-    mountline=$uuid' /mnt/shared_media auto nosuid,nodev,nofail 0 0'
-    if ! grep -Fxq $uuid' /mnt/shared_media auto nosuid,nodev,nofail 0 0' /etc/fstab; then
-		echo -e '\033[1;32m'$dev'\033[1;33m saved as \033[1;32m/mnt/shared_media\033[1;33m in filesystem table (\033[1;36m/etc/fstab\033[1;33m)\033[0m'
-        echo $mountline>>/etc/fstab
-	else
-		echo -e '\033[1;32m'$dev'\033[1;33m already saved as \033[1;32m/mnt/shared_media\033[1;33m in filesystem table (\033[1;36m/etc/fstab\033[1;33m). No changes made.\033[0m'
-    fi
+if [ -z "${dev}" ]; then
+    echo -e '\033[1;31mERROR: \033[1;33mNTFS formatted devices not detected!\033[0m'
 else
-	echo -e '\033[1;31mERROR: \033[1;33mNTFS formatted device not detected!\033[0m'
+    BASE_DIR="/mnt"
+    PREFIX="shared_media"
+    counter=0
+    for dev in $(blkid -t TYPE=ntfs -o device); do
+        if [ $counter -eq 0 ]; then
+            MOUNT_POINT="${BASE_DIR}/${PREFIX}"
+        else
+            MOUNT_POINT="${BASE_DIR}/${PREFIX}$(printf "%02d" $counter)"
+        fi
+        if [ ! -d "$MOUNT_POINT" ]; then
+            mkdir -p "$MOUNT_POINT"
+        fi
+        uuid=$(blkid -s UUID $dev | cut -f2 -d':' | cut -c2-)
+        mountline=$uuid" "$MOUNT_POINT" auto nosuid,nodev,nofail 0 0"
+        if ! grep -Fxq $uuid" "$MOUNT_POINT" auto nosuid,nodev,nofail 0 0" /etc/fstab; then
+            echo -e '\033[1;32m'$dev'\033[1;33m saved as \033[1;32m'$MOUNT_POINT'\033[1;33m in filesystem table (\033[1;36m/etc/fstab\033[1;33m)\033[0m'
+            echo $mountline>>/etc/fstab
+        else
+            echo -e '\033[1;32m'$dev'\033[1;33m already saved as \033[1;32m'$MOUNT_POINT'\033[1;33m in filesystem table (\033[1;36m/etc/fstab\033[1;33m). No changes made.\033[0m'
+        fi
+        ((counter++))
+    done
 fi
 
 # Start Process...
