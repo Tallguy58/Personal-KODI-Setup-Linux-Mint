@@ -47,7 +47,6 @@ files=$(ls -1 /var/lib/samba/usershares)
 if [ "$files" != """" ]; then
   rm -f /var/lib/samba/usershares/*
 fi
-run-in-user-session net usershare add Shared_Media /mnt/shared_media "Media Centre" Everyone:F guest_ok=y
 }
 
 function get-kodi() {
