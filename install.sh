@@ -347,10 +347,10 @@ EOF
     for dev in $(blkid -t TYPE=ntfs -o device); do
         if [ $counter -eq 0 ]; then
             MOUNT_POINT="${BASE_DIR}/${PREFIX}"
-			run-in-user-session net usershare add shared_media $MOUNT_POINT "Media Centre" Everyone:F guest_ok=y
+			run-in-user-session net usershare add $PREFIX $MOUNT_POINT "Media Centre" Everyone:F guest_ok=y
         else
             MOUNT_POINT="${BASE_DIR}/${PREFIX}$(printf "%02d" $counter)"
-			run-in-user-session net usershare add shared_media$counter $MOUNT_POINT "Media Centre"$(printf "%02d" $counter) Everyone:F guest_ok=y
+			run-in-user-session net usershare add $PREFIX$(printf "%02d" $counter) $MOUNT_POINT "Media Centre"$(printf "%02d" $counter) Everyone:F guest_ok=y
         fi
 		MOUNT_NAME="${MOUNT_POINT#\/mnt\/}"
         if [ ! -d "$MOUNT_POINT" ]; then
