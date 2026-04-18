@@ -305,7 +305,7 @@ dev=$(lsblk -o NAME,FSTYPE -n -r | grep "ntfs" | head -n 1 | awk '{print "/dev/"
 if [ -z "${dev}" ]; then
     echo -e '\033[1;31mERROR: \033[1;33mNTFS formatted devices not detected!\033[0m'
 else
-	get-samba
+	## get-samba
 	if [ ! -d /etc/samba ]; then
 		mkdir -p /etc/samba
 	fi
@@ -347,8 +347,10 @@ EOF
     for dev in $(blkid -t TYPE=ntfs -o device); do
         if [ $counter -eq 0 ]; then
             MOUNT_POINT="${BASE_DIR}/${PREFIX}"
+			run-in-user-session net usershare add shared_media $MOUNT_POINT "Media Centre" Everyone:F guest_ok=y
         else
             MOUNT_POINT="${BASE_DIR}/${PREFIX}$(printf "%02d" $counter)"
+			run-in-user-session net usershare add shared_media$counter $MOUNT_POINT "Media Centre"$counter Everyone:F guest_ok=y
         fi
 		MOUNT_NAME="${MOUNT_POINT#\/mnt\/}"
         if [ ! -d "$MOUNT_POINT" ]; then
