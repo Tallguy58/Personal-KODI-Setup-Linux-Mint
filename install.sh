@@ -304,7 +304,8 @@ dev=$(lsblk -o NAME,FSTYPE -n -r | grep "ntfs" | head -n 1 | awk '{print "/dev/"
 if [ -z "${dev}" ]; then
     echo -e '\033[1;31mERROR: \033[1;33mNTFS formatted devices not detected!\033[0m'
 else
-	## get-samba
+	get-samba
+	get-SimpleHTTPServerWithUpload
 	if [ ! -d /etc/samba ]; then
 		mkdir -p /etc/samba
 	fi
@@ -381,7 +382,6 @@ get-kodi
 get-php
 get-krusader
 get-conky
-get-SimpleHTTPServerWithUpload
 get-clamav
 fix-desktop-error
 bootdrivelabel
