@@ -350,7 +350,7 @@ EOF
 			run-in-user-session net usershare add shared_media $MOUNT_POINT "Media Centre" Everyone:F guest_ok=y
         else
             MOUNT_POINT="${BASE_DIR}/${PREFIX}$(printf "%02d" $counter)"
-			run-in-user-session net usershare add shared_media$counter $MOUNT_POINT "Media Centre"$counter Everyone:F guest_ok=y
+			run-in-user-session net usershare add shared_media$counter $MOUNT_POINT "Media Centre"$(printf "%02d" $counter) Everyone:F guest_ok=y
         fi
 		MOUNT_NAME="${MOUNT_POINT#\/mnt\/}"
         if [ ! -d "$MOUNT_POINT" ]; then
