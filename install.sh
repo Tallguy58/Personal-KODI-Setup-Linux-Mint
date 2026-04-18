@@ -41,8 +41,6 @@ install-package libsmbclient0
 install-package libwbclient0
 install-package winbind
 install-package libnss-winbind
-mkdir -p /etc/samba
-cp -f files/smb.conf /etc/samba
 touch /etc/libuser.conf
 chmod 0777 -Rf /var/lib/samba/usershares
 files=$(ls -1 /var/lib/samba/usershares)
@@ -302,11 +300,47 @@ install-package libpam-runtime
 install-package gdebi
 install-package openssh-server
 
-## FIND ALL NTFS DRIVES AND CREATE FSTAB MOUNT ENTRIES.
+## FIND ALL NTFS DRIVES, CREATE FSTAB MOUNT ENTRIES AND CREATE SAMBA SHARING.
 dev=$(lsblk -o NAME,FSTYPE -n -r | grep "ntfs" | head -n 1 | awk '{print "/dev/"$1}')
 if [ -z "${dev}" ]; then
     echo -e '\033[1;31mERROR: \033[1;33mNTFS formatted devices not detected!\033[0m'
 else
+	get-samba
+	if [ ! -d /etc/samba ]; then
+		mkdir -p /etc/samba
+	fi
+	cat <<EOF > /etc/samba/smb.conf
+[global]
+	workgroup = WORKGROUP
+	client min protocol = NT1
+	server min protocol = NT1
+	dns proxy = No
+	log file = /var/log/samba/log.%m
+	map to guest = Bad User
+	max log size = 1000
+	min receivefile size = 16384
+	name resolve order = bcast host lmhosts wins
+	obey pam restrictions = Yes
+	pam password change = Yes
+	panic action = /usr/share/samba/panic-action %d
+	passwd chat = *Enter\snew\s*\spassword:* %n\n *Retype\snew\s*\spassword:* %n\n *password\supdated\ssuccessfully* .
+	passwd program = /usr/bin/passwd %u
+	preferred master = Yes
+	server role = standalone server
+	server string = %h server (Samba, Ubuntu)
+	socket options = TCP_NODELAY IPTOS_LOWDELAY
+	unix password sync = Yes
+	usershare allow guests = Yes
+	usershare owner only = No
+	wins support = yes
+	local master = yes
+	preferred master = yes
+	aio read size = 16384
+	aio write size = 16384
+	strict sync = No
+	use sendfile = Yes
+
+EOF
     BASE_DIR="/mnt"
     PREFIX="shared_media"
     counter=0
@@ -316,6 +350,7 @@ else
         else
             MOUNT_POINT="${BASE_DIR}/${PREFIX}$(printf "%02d" $counter)"
         fi
+		MOUNT_NAME="${MOUNT_POINT#\/mnt\/}"
         if [ ! -d "$MOUNT_POINT" ]; then
             mkdir -p "$MOUNT_POINT"
         fi
@@ -327,13 +362,20 @@ else
         else
             echo -e '\033[1;32m'$dev'\033[1;33m already saved as \033[1;32m'$MOUNT_POINT'\033[1;33m in filesystem table (\033[1;36m/etc/fstab\033[1;33m). No changes made.\033[0m'
         fi
-        ((counter++))
+		cat <<EOF >> /etc/samba/smb.conf
+	[$MOUNT_NAME]
+	path = $MOUNT_POINT
+	guest ok = yes
+	read only = no
+	writeable = yes
+		
+EOF
+		((counter++))
     done
 fi
 
 # Start Process...
 get-perl
-get-samba
 get-kodi
 get-php
 get-krusader
