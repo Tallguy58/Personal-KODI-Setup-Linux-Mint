@@ -302,22 +302,22 @@ install-package libpam-runtime
 install-package gdebi
 install-package openssh-server
 
-## FIND MEDIA FILES ON NTFS DRIVE AND CREATE AN FSTAB MOUNT ENTRY.
-mkdir -p /mnt/shared_media
-dev=$(findmnt -t fuseblk -n -o source | head -1)
-if [ -z "${dev}" ]; then
-	dev=$(findmnt -t ntfs3 -n -o source | head -1)
-fi
+## FIND NTFS DRIVE AND CREATE AN FSTAB MOUNT ENTRY.
+dev=$(lsblk -o NAME,FSTYPE -n -r | grep "ntfs" | head -n 1 | awk '{print "/dev/"$1}')
 if [ -n "${dev}" ]; then
-    echo -e $dev' is mounted as /mnt/shared_media'
+	if [ ! -d /mnt/shared_media ]; then
+		mkdir -p /mnt/shared_media
+	fi
     uuid=$(blkid -s UUID $dev | cut -f2 -d':' | cut -c2-)
     mountline=$uuid' /mnt/shared_media auto nosuid,nodev,nofail 0 0'
-    if ! grep -Fxq $uuid' /mnt/shared_media auto nosuid,nodev,nofail 0 0' /etc/fstab
-    then
+    if ! grep -Fxq $uuid' /mnt/shared_media auto nosuid,nodev,nofail 0 0' /etc/fstab; then
+		echo -e '\033[1;32m'$dev'\033[1;33m saved as \033[1;32m/mnt/shared_media\033[1;33m in filesystem table (\033[1;36m/etc/fstab\033[1;33m)\033[0m'
         echo $mountline>>/etc/fstab
+	else
+		echo -e '\033[1;32m'$dev'\033[1;33m already saved as \033[1;32m/mnt/shared_media\033[1;33m in filesystem table (\033[1;36m/etc/fstab\033[1;33m). No changes made.\033[0m'
     fi
 else
-	echo -e '\033[1;31mShared Media Drive not located!\033[0m'
+	echo -e '\033[1;31mERROR: \033[1;33mNTFS formatted device not detected!\033[0m'
 fi
 
 # Start Process...
