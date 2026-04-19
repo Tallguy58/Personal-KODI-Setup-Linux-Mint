@@ -160,15 +160,17 @@ function get-conky() {
 echo -e '\033[1;33mInstalling \033[1;34mConky\033[0m'
 install-package conky-all
 cp -f files/conky.conf /home/$currentuser/.conkyrc
-echo -e '[Desktop Entry]'>/home/$currentuser/.config/autostart/conky.desktop
-echo -e 'Type=Application'>>/home/$currentuser/.config/autostart/conky.desktop
-echo -e 'Exec=/usr/bin/conky -d'>>/home/$currentuser/.config/autostart/conky.desktop
-echo -e 'X-GNOME-Autostart-enabled=true'>>/home/$currentuser/.config/autostart/conky.desktop
-echo -e 'NoDisplay=false'>>/home/$currentuser/.config/autostart/conky.desktop
-echo -e 'Hidden=false'>>/home/$currentuser/.config/autostart/conky.desktop
-echo -e 'Name[en_AU]=Conky'>>/home/$currentuser/.config/autostart/conky.desktop
-echo -e 'Comment[en_AU]=System information tool'>>/home/$currentuser/.config/autostart/conky.desktop
-echo -e 'X-GNOME-Autostart-Delay=5'>>/home/$currentuser/.config/autostart/conky.desktop
+cat <<EOF > /home/$currentuser/.config/autostart/conky.desktop
+[Desktop Entry]
+Type=Application
+Exec=/usr/bin/conky -d
+X-GNOME-Autostart-enabled=true
+NoDisplay=false
+Hidden=false
+Name[en_AU]=Conky
+Comment[en_AU]=System information tool
+X-GNOME-Autostart-Delay=5
+EOF
 ## HDSentinel
 wget -qO /tmp/hdsentinel.zip https://www.hdsentinel.com/hdslin/hdsentinel-020c-x64.zip
 unzip -oq /tmp/hdsentinel.zip -d /tmp
