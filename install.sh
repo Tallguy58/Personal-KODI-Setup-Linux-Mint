@@ -56,7 +56,7 @@ echo -e "[SeatDefaults]\nuser-session=cinnamon\nsession-setup-script=/usr/bin/fl
 
 ## Keymap settings...
 mkdir -p /home/$currentuser/.var/app/tv.kodi.Kodi/data/userdata/keymaps/
-cat <<EOF > /home/$currentuser/.var/app/tv.kodi.Kodi/data/userdata/keymaps/keyboard.xml
+cat <<'EOF'> /home/$currentuser/.var/app/tv.kodi.Kodi/data/userdata/keymaps/keyboard.xml
 <keymap>
   <global>
     <keyboard>
@@ -116,7 +116,7 @@ update-alternatives --set phar.phar /usr/bin/phar.phar7.4
 chmod -Rf 0777 /var/www/html
 rm -r -f /var/www/html/*
 unzip -o -q files/navphp4.45.zip -d/var/www/html
-cat <<EOF > /var/www/html/.htaccess
+cat <<'EOF' > /var/www/html/.htaccess
 php_value upload_max_filesize 4.0G
 php_value post_max_size 4.2G
 php_value memory_limit -1
@@ -161,7 +161,7 @@ sed -i "s/Exec=krusader -qwindowtitle %c %u/Exec=krusader -qwindowtitle %c %u --
 function get-conky() {
 echo -e '\033[1;33mInstalling \033[1;34mConky\033[0m'
 install-package conky-all
-cat <<EOF > /home/$currentuser/.conkyrc
+cat <<'EOF' > /home/$currentuser/.conkyrc
 -- vim: ts=4 sw=4 noet ai cindent syntax=lua
 --[[
 Conky, a system monitor, based on torsmo
@@ -291,7 +291,7 @@ ${color ddaa00}System Log Messages
 ${color}${font Arial:size=7}${execi 5 tail -n2 /var/log/syslog | fold -s -w70 }$font
 ]]
 EOF
-cat <<EOF > /home/$currentuser/.config/autostart/conky.desktop
+cat <<'EOF' > /home/$currentuser/.config/autostart/conky.desktop
 [Desktop Entry]
 Type=Application
 Exec=/usr/bin/conky -d
@@ -327,14 +327,14 @@ echo -e '\033[1;33mInstalling \033[1;34mSimple HTTP Service with Upload\033[0m'
 cp -f files/SimpleHTTPServerWithUpload.py /bin
 chmod +x -f /bin/SimpleHTTPServerWithUpload.py
 ## Create BASH Script
-cat <<EOF > /bin/SimpleHTTPServerWithUpload.sh
+cat <<'EOF' > /bin/SimpleHTTPServerWithUpload.sh
 #!/bin/bash
 clear
 cd /mnt/shared_media
 python3 /bin/SimpleHTTPServerWithUpload.py 8080
 EOF
 ## Create Service
-cat <<EOF > /lib/systemd/system/SimpleHTTPServerWithUpload.service
+cat <<'EOF' > /lib/systemd/system/SimpleHTTPServerWithUpload.service
 [Unit]
 Description=Simple HTTP Server With Upload
 
@@ -418,7 +418,7 @@ run-in-user-session dconf write /org/cinnamon/desktop/interface/clock-use-24h "f
 history -c
 reset
 wmctrl -r :ACTIVE: -e 0,50,50,1500,800
-xset s off noblank -dpms
+xset s noblank s off -dpms
 echo -e '\033[1;33mInstalling \033[1;34mCommon Utilities\033[0m'
 install-package software-properties-common
 install-package default-jre
@@ -449,7 +449,7 @@ else
 	if [ ! -d /etc/samba ]; then
 		mkdir -p /etc/samba
 	fi
-	cat <<EOF > /etc/samba/smb.conf
+	cat <<'EOF' > /etc/samba/smb.conf
 [global]
 	workgroup = WORKGROUP
 	client min protocol = NT1
@@ -487,15 +487,18 @@ EOF
     for dev in $(blkid -t TYPE=ntfs -o device); do
         if [ $counter -eq 0 ]; then
             MOUNT_POINT="${BASE_DIR}/${PREFIX}"
+       	    if [ ! -d "$MOUNT_POINT" ]; then
+                mkdir -p "$MOUNT_POINT"
+            fi
 			run-in-user-session net usershare add $PREFIX $MOUNT_POINT "Media Centre" Everyone:F guest_ok=y
         else
             MOUNT_POINT="${BASE_DIR}/${PREFIX}$(printf "%02d" $counter)"
+       	    if [ ! -d "$MOUNT_POINT" ]; then
+                mkdir -p "$MOUNT_POINT"
+            fi
 			run-in-user-session net usershare add $PREFIX$(printf "%02d" $counter) $MOUNT_POINT "Media Centre"$(printf "%02d" $counter) Everyone:F guest_ok=y
         fi
 		MOUNT_NAME="${MOUNT_POINT#\/mnt\/}"
-        if [ ! -d "$MOUNT_POINT" ]; then
-            mkdir -p "$MOUNT_POINT"
-        fi
         uuid=$(blkid -s UUID $dev | cut -f2 -d':' | cut -c2-)
         mountline=$uuid" "$MOUNT_POINT" auto nosuid,nodev,nofail 0 0"
         if ! grep -Fxq $uuid" "$MOUNT_POINT" auto nosuid,nodev,nofail 0 0" /etc/fstab; then
