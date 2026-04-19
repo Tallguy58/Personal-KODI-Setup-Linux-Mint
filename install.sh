@@ -116,9 +116,11 @@ update-alternatives --set phar.phar /usr/bin/phar.phar7.4
 chmod -Rf 0777 /var/www/html
 rm -r -f /var/www/html/*
 unzip -o -q files/navphp4.45.zip -d/var/www/html
-echo -e 'php_value upload_max_filesize 4.0G'>/var/www/html/.htaccess
-echo -e 'php_value post_max_size 4.2G'>>/var/www/html/.htaccess
-echo -e 'php_value memory_limit -1'>>/var/www/html/.htaccess
+cat <<EOF > /var/www/html/.htaccess
+php_value upload_max_filesize 4.0G
+php_value post_max_size 4.2G
+php_value memory_limit -1
+EOF
 sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
 sed -i 's/Restart=on-abort/Restart=always/g' /lib/systemd/system/apache2.service
 systemctl -q enable apache2
