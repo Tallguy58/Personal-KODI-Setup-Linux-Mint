@@ -50,7 +50,7 @@ fi
 }
 
 function get-kodi() {
-echo -e '\033[1;33mInstalling \033[1;34mKODI Media Centre\033[0m'
+echo -e '\033c\033[1;33mInstalling \033[1;34mKODI Media Centre\033[0m'
 flatpak install -y --noninteractive flathub tv.kodi.Kodi
 echo -e "[SeatDefaults]\nuser-session=cinnamon\nsession-setup-script=/usr/bin/flatpak run --branch=stable --arch=x86_64 --command=kodi tv.kodi.Kodi --standalone">/etc/lightdm/lightdm.conf.d/70-linuxmint.conf
 
@@ -86,7 +86,7 @@ EOF
 }
 
 function get-php() {
-echo -e '\033[1;33mInstalling \033[1;34mApache\033[0m'
+echo -e '\033c\033[1;33mInstalling \033[1;34mApache\033[0m'
 install-package apache2
 echo -e '\033[1;33mInstalling \033[1;34mPHP 7.4\033[0m'
 add-apt-repository -y ppa:ondrej/php
@@ -127,7 +127,7 @@ systemctl -q enable apache2
 }
 
 function get-krusader() {
-echo -e '\033[1;33mInstalling \033[1;34mKrusader Twin File Browser\033[0m'
+echo -e '\033c\033[1;33mInstalling \033[1;34mKrusader Twin File Browser\033[0m'
 install-package krusader
 install-package libc6
 install-package libgcc-s1
