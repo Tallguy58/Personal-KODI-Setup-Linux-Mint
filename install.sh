@@ -90,7 +90,7 @@ echo -e '\033[1;33mInstalling \033[1;34mApache\033[0m'
 install-package apache2
 echo -e '\033[1;33mInstalling \033[1;34mPHP 7.4\033[0m'
 add-apt-repository -y ppa:ondrej/php
-apt-get -y -qq update >/dev/null
+apt-get --allow-releaseinfo-change -y -qq update >/dev/null
 install-package php7.4
 install-package php7.4-cli
 install-package php7.4-json
@@ -438,6 +438,7 @@ install-package openssl
 install-package libpam-runtime
 install-package gdebi
 install-package openssh-server
+install-package breeze-icon-theme
 
 ## FIND ALL NTFS DRIVES, CREATE FSTAB MOUNT ENTRIES AND CREATE SAMBA SHARING.
 dev=$(lsblk -o NAME,FSTYPE -n -r | grep "ntfs" | head -n 1 | awk '{print "/dev/"$1}')
