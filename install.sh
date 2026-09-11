@@ -13,7 +13,7 @@ function run-in-user-session() {
 install-package() {
 if ! dpkg -s $1 >/dev/null 2>&1; then
     echo -e '\033[1;33mInstalling \033[1;32m'$1' \033[0m\c'
-    apt-get -y -qq install $1 >/dev/null
+	apt-get -y -qq -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" install $1 >/dev/null
     echo -e '\033[1;36m... OK\033[0m'
 fi
 }
