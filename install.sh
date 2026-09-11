@@ -439,6 +439,7 @@ install-package libpam-runtime
 install-package gdebi
 install-package openssh-server
 install-package breeze-icon-theme
+install-package fwupd
 
 ## FIND ALL NTFS DRIVES, CREATE FSTAB MOUNT ENTRIES AND CREATE SAMBA SHARING.
 dev=$(lsblk -o NAME,FSTYPE -n -r | grep "ntfs" | head -n 1 | awk '{print "/dev/"$1}')
@@ -563,6 +564,9 @@ echo -e '\033[1;33mApplying Updates...\033[0m'
 apt-get -y -qq update >/dev/null
 echo -e '\033[1;33mApplying Upgrades...\033[0m'
 apt-get -y -qq --allow-change-held-packages -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" -o APT::Get::Always-Include-Phased-Updates=true upgrade >/dev/null
+echo -e '\033[1;33mApplying Firmware Updates...\033[0m'
+fwupdmgr refresh -y --force >/dev/null
+fwupdmgr update -y --no-reboot-check >/dev/null
 
 systemctl -q daemon-reload
 
