@@ -6,9 +6,11 @@ currentuser=$(users | awk '{print $1}')
 chmod -Rf 0777 /home
 
 ## Create Exceptions List
-echo '*.log'>/tmp/file.lst
-echo '*.tmp'>>/tmp/file.lst
-echo '.var/app/tv.kodi.Kodi/data/userdata/keymaps/keyboard.xml'>>/tmp/file.lst
+cat <<'EOF'> /tmp/file.lst
+*.log
+*.tmp
+.var/app/tv.kodi.Kodi/data/userdata/keymaps/keyboard.xml
+EOF
 
 ## Backup User Profile...
 echo -e "\033[1;33mUser \"$currentuser\"... \033[1;34mBackup User Profile\033[0m"
